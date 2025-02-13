@@ -45,3 +45,13 @@ class Task(models.Model):
     prio = models.ForeignKey(Prio, on_delete=models.CASCADE)
     subtasks = models.ManyToManyField(Subtask)
     subtasks_done = models.ManyToManyField(SubtaskDone)
+
+
+class Summary(models.Model):
+    todo_count = models.IntegerField()
+    done_count = models.IntegerField()
+    urgent_count = models.IntegerField()
+    most_urgent_due_date = models.DateField()
+    total_tasks = models.IntegerField()
+    in_progress_count = models.IntegerField()
+    awaiting_feedback_count = models.IntegerField()
