@@ -9,26 +9,42 @@ class User (models.Model):
     contactNumber = models.IntegerField()
     color = models.CharField(max_length=7)
 
+    def __str__(self):
+        return self.username
+
 
 class AssignedUser(models.Model):
     username = models.CharField(max_length=30)
     initials = models.CharField(max_length=2)
     color = models.CharField(max_length=7)
 
+    def __str__(self):
+        return self.username
+
 
 class Category(models.Model):
     name = models.CharField(max_length=15)
     color = models.CharField(max_length=7)
+
+    def __str__(self):
+        return self.name
+
 
 
 class Prio(models.Model):
     level = models.CharField(max_length=15)
     icon_path = models.CharField(max_length=255)
 
+    def __str__(self):
+        return self.level
+
 
 class Subtask(models.Model):
     checkbox_img = models.CharField(max_length=255)
     subtask = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.subtask
 
 
 class SubtaskDone(models.Model):
@@ -40,7 +56,7 @@ class Task(models.Model):
     description = models.TextField()
     due_date = models.DateField()
     status = models.CharField(max_length=255)
-    assigned_users = models.ManyToManyField(AssignedUser)
+    assigned_users = models.ManyToManyField(User, related_name='tasks')
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     prio = models.ForeignKey(Prio, on_delete=models.CASCADE)
     subtasks = models.ManyToManyField(Subtask)
