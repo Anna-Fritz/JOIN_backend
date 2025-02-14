@@ -54,7 +54,7 @@ class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     due_date = models.DateField()
-    status = models.CharField(max_length=255)
+    status = models.CharField(max_length=255, default="to_do")
     assigned_users = models.ManyToManyField(User, related_name='tasks', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     prio = models.ForeignKey(Prio, on_delete=models.CASCADE)
