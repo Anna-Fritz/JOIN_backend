@@ -23,6 +23,20 @@ class PrioSerialzer(serializers.ModelSerializer):
         exclude = ['id']
 
 
+class SubtaskSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Subtask
+        fields = "__all__"
+
+
+class SubtaskDoneSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SubtaskDone
+        fields = "__all__"
+
+
 class TaskSerializer(serializers.ModelSerializer):
 
     assigned_users = UserSerializer(many=True, read_only=True)
@@ -30,6 +44,7 @@ class TaskSerializer(serializers.ModelSerializer):
         queryset=User.objects.all(),
         many=True,
         write_only=True,
+        required=False,
         source='assigned_users'
     )
     category = CategorySerialzer(read_only=True)
@@ -44,7 +59,23 @@ class TaskSerializer(serializers.ModelSerializer):
         write_only=True,
         source='prio'
     )
+    subtasks = SubtaskSerializer(many=True, read_only=True)
+    subtask_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
+        source='subtasks'
+    )
+    subtasks_done = SubtaskDoneSerializer(many=True, read_only=True)
+    subtask_done_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
+        source='subtasks_done'
+    )
 
     class Meta:
         model = Task
-        fields = "__all__"
+        fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtask_id', 'subtasks_done', 'subtask_done_id']
