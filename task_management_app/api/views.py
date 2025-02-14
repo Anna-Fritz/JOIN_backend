@@ -18,3 +18,8 @@ class UserSingleView(generics.RetrieveUpdateDestroyAPIView):
 class TasksView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+
+
+class TaskSingleView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
