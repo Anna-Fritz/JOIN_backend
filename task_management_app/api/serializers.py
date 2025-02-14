@@ -6,14 +6,21 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+        exclude = ['id']
 
 
 class CategorySerialzer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = "__all__"
+        exclude = ['id']
+
+
+class PrioSerialzer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Prio
+        exclude = ['id']
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -30,6 +37,12 @@ class TaskSerializer(serializers.ModelSerializer):
         queryset=Category.objects.all(),
         write_only=True,
         source='category'
+    )
+    prio = PrioSerialzer(read_only=True)
+    prio_id = serializers.PrimaryKeyRelatedField(
+        queryset=Prio.objects.all(),
+        write_only=True,
+        source='prio'
     )
 
     class Meta:
