@@ -30,7 +30,6 @@ class Category(models.Model):
         return self.name
 
 
-
 class Prio(models.Model):
     level = models.CharField(max_length=15)
     icon_path = models.CharField(max_length=255)
@@ -53,14 +52,14 @@ class SubtaskDone(models.Model):
 
 class Task(models.Model):
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     due_date = models.DateField()
     status = models.CharField(max_length=255)
-    assigned_users = models.ManyToManyField(User, related_name='tasks')
+    assigned_users = models.ManyToManyField(User, related_name='tasks', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     prio = models.ForeignKey(Prio, on_delete=models.CASCADE)
-    subtasks = models.ManyToManyField(Subtask)
-    subtasks_done = models.ManyToManyField(SubtaskDone)
+    subtasks = models.ManyToManyField(Subtask, blank=True)
+    subtasks_done = models.ManyToManyField(SubtaskDone, blank=True)
 
 
 class Summary(models.Model):
