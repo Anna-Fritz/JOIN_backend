@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import mixins
 from rest_framework import generics
-from ..models import User, Task, Subtask, SubtaskDone
-from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer
+from ..models import User, Task, Subtask, SubtaskDone, Summary
+from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer, \
+    SummarySerializer
 
 
 class UsersView(generics.ListCreateAPIView):
@@ -105,3 +106,8 @@ class SubtaskDoneSingleView(generics.RetrieveUpdateDestroyAPIView):
 
         task.subtasks_done.remove(instance)  # Entfernt die Subtask aus der Task-Relation
         instance.delete()  # Löscht die Subtask_Done endgültig
+
+
+class SummaryView(generics.ListAPIView):
+    queryset = Summary.objects.all()
+    serializer_class = SummarySerializer

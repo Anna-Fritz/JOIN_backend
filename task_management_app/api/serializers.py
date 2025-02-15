@@ -79,3 +79,12 @@ class TaskSerializer(serializers.ModelSerializer):
     class Meta:
         model = Task
         fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtask_id', 'subtasks_done', 'subtask_done_id']
+
+
+class SummarySerializer (serializers.ModelSerializer):
+
+    total_tasks = Task.objects.count()
+
+    class Meta:
+        model = Summary
+        fields = "__all__"
