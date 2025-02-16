@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from ..models import User, AssignedUser, Category, Prio, Subtask, SubtaskDone, Summary, Task
-
+from ..models import User, Category, Prio, Subtask, SubtaskDone, Task
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -80,11 +79,3 @@ class TaskSerializer(serializers.ModelSerializer):
         model = Task
         fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtask_id', 'subtasks_done', 'subtask_done_id']
 
-
-class SummarySerializer (serializers.ModelSerializer):
-
-    total_tasks = Task.objects.count()
-
-    class Meta:
-        model = Summary
-        fields = "__all__"

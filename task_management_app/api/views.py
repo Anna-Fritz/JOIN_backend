@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
-from rest_framework import mixins
+from rest_framework.response import Response
 from rest_framework import generics
-from ..models import User, Task, Subtask, SubtaskDone, Summary
-from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer, \
-    SummarySerializer
+from ..models import User, Task, Subtask, SubtaskDone
+from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer
+from django.db.models import Count, Min, Q
 
 
 class UsersView(generics.ListCreateAPIView):
@@ -108,6 +108,16 @@ class SubtaskDoneSingleView(generics.RetrieveUpdateDestroyAPIView):
         instance.delete()  # Löscht die Subtask_Done endgültig
 
 
-class SummaryView(generics.ListAPIView):
-    queryset = Summary.objects.all()
-    serializer_class = SummarySerializer
+class SummaryView(APIView):
+    def get(self, request):
+        summary_data = Task.objects.aggregate(
+            todo_count=Count("id", filter=Q(status="to_do")),
+            done_count=Count("id", filter=Q(status="done")),
+            total_tasks=Count("id"),
+            urgent_count=Count("id", filter=Q(prio__level="urgent")),
+            most_urgent_due_date=Min("due_date", filter=Q(prio__level="urgent")),
+            in_progress_count=Count("id", filter=Q(status="in_progress")),
+            awaiting_feedback_count=Count("id", filter=Q(status="await_feedback"))
+        )
+
+        return Response(summary_data)

@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import User, AssignedUser, Category, Prio, Subtask, SubtaskDone, Summary, Task
+from .models import User, AssignedUser, Category, Prio, Subtask, SubtaskDone, Task
 
 # Register your models here.
 
-admin.site.register([User, AssignedUser, Category, Prio, Subtask, SubtaskDone, Summary, Task])
+admin.site.register([User, AssignedUser, Category, Prio, Subtask, SubtaskDone, Task])

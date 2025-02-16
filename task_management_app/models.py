@@ -61,12 +61,3 @@ class Task(models.Model):
     subtasks = models.ManyToManyField(Subtask, blank=True)
     subtasks_done = models.ManyToManyField(SubtaskDone, blank=True)
 
-
-class Summary(models.Model):
-    todo_count = models.IntegerField()
-    done_count = models.IntegerField()
-    urgent_count = models.IntegerField()
-    most_urgent_due_date = models.DateField()
-    total_tasks = models.IntegerField()
-    in_progress_count = models.IntegerField()
-    awaiting_feedback_count = models.IntegerField()
