@@ -38,7 +38,9 @@ class SubtasksView(generics.ListCreateAPIView):
         pk = self.kwargs.get('pk')
         task = Task.objects.get(pk=pk)
         subtask = serializer.save()
-        task.subtasks.add(subtask)
+
+        if subtask not in task.subtasks.all():
+            task.subtasks.add(subtask)
 
 
 class SubtaskSingleView(generics.RetrieveUpdateDestroyAPIView):
