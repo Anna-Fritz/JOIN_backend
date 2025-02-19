@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from ..models import User, Category, Prio, Subtask, SubtaskDone, Task
 
+
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        exclude = ['id']
+        fields = "__all__"
 
 
 class CategorySerialzer(serializers.ModelSerializer):
@@ -60,7 +61,7 @@ class TaskSerializer(serializers.ModelSerializer):
     )
     subtasks = SubtaskSerializer(many=True, read_only=True)
     subtask_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(),
+        queryset=Subtask.objects.all(),
         many=True,
         write_only=True,
         required=False,
@@ -68,7 +69,7 @@ class TaskSerializer(serializers.ModelSerializer):
     )
     subtasks_done = SubtaskDoneSerializer(many=True, read_only=True)
     subtask_done_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(),
+        queryset=SubtaskDone.objects.all(),
         many=True,
         write_only=True,
         required=False,
