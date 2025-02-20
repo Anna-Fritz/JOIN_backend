@@ -9,6 +9,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class PrioSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Prio
+        fields = "__all__"
+
+
 class CategorySerialzer(serializers.ModelSerializer):
 
     class Meta:
