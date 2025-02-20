@@ -16,11 +16,11 @@ class PrioSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CategorySerialzer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        exclude = ['id']
+        fields = "__all__"
 
 
 class PrioSerialzer(serializers.ModelSerializer):
@@ -54,7 +54,7 @@ class TaskSerializer(serializers.ModelSerializer):
         required=False,
         source='assigned_users'
     )
-    category = CategorySerialzer(read_only=True)
+    category = CategorySerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
         write_only=True,

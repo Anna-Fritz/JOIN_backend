@@ -1,8 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics
-from ..models import User, Task, Subtask, SubtaskDone, Prio
-from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer, PrioSerializer
+from ..models import User, Task, Subtask, SubtaskDone, Prio, Category
+from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, SubtaskDoneSerializer, \
+    PrioSerializer, CategorySerializer
 from django.db.models import Count, Min, Q
 
 
@@ -19,6 +20,11 @@ class UserSingleView(generics.RetrieveUpdateDestroyAPIView):
 class PriosView(generics.ListCreateAPIView):
     queryset = Prio.objects.all()
     serializer_class = PrioSerializer
+
+
+class CategoriesView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
 
 class TasksView(generics.ListCreateAPIView):
