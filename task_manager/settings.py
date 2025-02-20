@@ -77,9 +77,9 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
-CORS_ALLOW_HEADERS = list(default_headers) + ["X-CSRFTOKEN"]
+# CORS_ALLOW_HEADERS = list(default_headers) + ["X-CSRFTOKEN"]
 
-CORS_ALLOW_ALL_METHODS = True
+# CORS_ALLOW_ALL_METHODS = True
 
 ROOT_URLCONF = 'task_manager.urls'
 

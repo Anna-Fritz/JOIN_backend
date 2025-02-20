@@ -3,7 +3,7 @@ from django.db import models
 # Create your models here.
 
 
-class User (models.Model):
+class User(models.Model):
     username = models.CharField(max_length=30)
     email = models.CharField(max_length=30)
     contactNumber = models.CharField(max_length=30)
@@ -38,18 +38,6 @@ class Prio(models.Model):
         return self.level
 
 
-class Subtask(models.Model):
-    checkbox_img = models.CharField(max_length=255)
-    subtask = models.CharField(max_length=255)
-
-    def __str__(self):
-        return self.subtask
-
-
-class SubtaskDone(models.Model):
-    subtask_done = models.CharField(max_length=255)
-
-
 class Task(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -58,6 +46,21 @@ class Task(models.Model):
     assigned_users = models.ManyToManyField(User, related_name='tasks', blank=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     prio = models.ForeignKey(Prio, on_delete=models.CASCADE)
-    subtasks = models.ManyToManyField(Subtask, blank=True)
-    subtasks_done = models.ManyToManyField(SubtaskDone, blank=True)
 
+    def __str__(self):
+        return self.title
+
+
+class Subtask(models.Model):
+    checkbox_img = models.CharField(max_length=255)
+    subtask = models.CharField(max_length=255)
+    task = models.ForeignKey(Task, related_name="subtasks", on_delete=models.CASCADE, null=True, blank=True)
+    completed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.subtask
+
+
+class SubtaskDone(models.Model):
+    subtask_done = models.CharField(max_length=255)
+    task = models.ForeignKey(Task, related_name="subtasks_done", on_delete=models.CASCADE, null=True, blank=True)

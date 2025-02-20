@@ -23,13 +23,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class PrioSerialzer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Prio
-        exclude = ['id']
-
-
 class SubtaskSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,30 +53,27 @@ class TaskSerializer(serializers.ModelSerializer):
         write_only=True,
         source='category'
     )
-    prio = PrioSerialzer(read_only=True)
+    prio = PrioSerializer(read_only=True)
     prio_id = serializers.PrimaryKeyRelatedField(
         queryset=Prio.objects.all(),
         write_only=True,
         source='prio'
     )
-    subtasks = SubtaskSerializer(many=True, read_only=True)
-    subtask_id = serializers.PrimaryKeyRelatedField(
-        queryset=Subtask.objects.all(),
-        many=True,
-        write_only=True,
-        required=False,
-        source='subtasks'
-    )
-    subtasks_done = SubtaskDoneSerializer(many=True, read_only=True)
-    subtask_done_id = serializers.PrimaryKeyRelatedField(
-        queryset=SubtaskDone.objects.all(),
-        many=True,
-        write_only=True,
-        required=False,
-        source='subtasks_done'
-    )
+    subtasks = SubtaskSerializer(many=True, required=False)
+    subtasks_done = SubtaskDoneSerializer(many=True, required=False)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtask_id', 'subtasks_done', 'subtask_done_id']
+        fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtasks_done']
+
+    def create(self, validated_data):
+        """ Überschreibt das create()-Methode, um Subtasks zu speichern """
+        subtasks_data = validated_data.pop('subtasks', [])  # Subtasks-Daten aus Request entfernen
+        assigned_users = validated_data.pop('assigned_users', [])
+        task = Task.objects.create(**validated_data)  # Erstellt die Task
+        task.assigned_users.set(assigned_users)
+
+        for subtask_data in subtasks_data:
+            Subtask.objects.create(task=task, **subtask_data)  # Verknüpft Subtasks mit Task
+        return task
 
