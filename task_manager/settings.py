@@ -35,21 +35,21 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
     'task_management_app'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -67,6 +67,9 @@ CSRF_TRUSTED_ORIGINS = [
 
 ]
 
+# CORS_ALLOW_ALL_ORIGINS = True
+
+
 CORS_ALLOWED_ORIGINS = [
 
     'http://127.0.0.1:5500',
@@ -77,9 +80,19 @@ CORS_ALLOWED_ORIGINS = [
 
 ]
 
-# CORS_ALLOW_HEADERS = list(default_headers) + ["X-CSRFTOKEN"]
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",  # Muss vorhanden sein
+    "DELETE",
+    "OPTIONS"
+]
 
-# CORS_ALLOW_ALL_METHODS = True
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type",
+]
 
 ROOT_URLCONF = 'task_manager.urls'
 
