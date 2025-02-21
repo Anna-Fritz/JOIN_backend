@@ -43,7 +43,6 @@ class Task(models.Model):
 
 
 class Subtask(models.Model):
-    checkbox_img = models.CharField(max_length=255)
     subtask = models.CharField(max_length=255)
     task = models.ForeignKey(Task, related_name="subtasks", on_delete=models.CASCADE, null=True, blank=True)
     completed = models.BooleanField(default=False)
