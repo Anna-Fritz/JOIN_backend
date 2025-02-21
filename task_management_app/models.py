@@ -13,15 +13,6 @@ class User(models.Model):
         return self.username
 
 
-class AssignedUser(models.Model):
-    username = models.CharField(max_length=30)
-    initials = models.CharField(max_length=2)
-    color = models.CharField(max_length=7)
-
-    def __str__(self):
-        return self.username
-
-
 class Category(models.Model):
     name = models.CharField(max_length=15)
     color = models.CharField(max_length=7)
@@ -59,8 +50,3 @@ class Subtask(models.Model):
 
     def __str__(self):
         return self.subtask
-
-
-class SubtaskDone(models.Model):
-    subtask_done = models.CharField(max_length=255)
-    task = models.ForeignKey(Task, related_name="subtasks_done", on_delete=models.CASCADE, null=True, blank=True)
