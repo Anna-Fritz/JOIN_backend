@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from ..models import User, Category, Prio, Subtask, SubtaskDone, Task
+from ..models import User, Category, Prio, Subtask, Task
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -30,13 +30,6 @@ class SubtaskSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class SubtaskDoneSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = SubtaskDone
-        fields = "__all__"
-
-
 class TaskSerializer(serializers.ModelSerializer):
 
     assigned_users = UserSerializer(many=True, read_only=True)
@@ -60,11 +53,10 @@ class TaskSerializer(serializers.ModelSerializer):
         source='prio'
     )
     subtasks = SubtaskSerializer(many=True, required=False)
-    subtasks_done = SubtaskDoneSerializer(many=True, required=False)
 
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks', 'subtasks_done']
+        fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks']
 
     def create(self, validated_data):
         """ Überschreibt das create()-Methode, um Subtasks zu speichern """
@@ -76,4 +68,23 @@ class TaskSerializer(serializers.ModelSerializer):
         for subtask_data in subtasks_data:
             Subtask.objects.create(task=task, **subtask_data)  # Verknüpft Subtasks mit Task
         return task
+    
+    def update(self, instance, validated_data):
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.due_date = validated_data.get('due_date', instance.due_date)
+        instance.prio = validated_data.get('prio', instance.prio)
+        instance.category = validated_data.get('category', instance.category)
+        instance.status = validated_data.get('status', instance.status)
 
+        if 'assigned_users' in validated_data:
+            instance.assigned_users.set(validated_data['assigned_users'])
+
+        if 'subtasks' in validated_data:
+            instance.subtasks.all().delete()
+            for subtask_data in validated_data['subtasks']:
+                Subtask.objects.create(task=instance, **subtask_data)
+
+        instance.save()
+        return instance
+    
