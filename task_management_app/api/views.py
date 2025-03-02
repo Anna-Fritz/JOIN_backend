@@ -12,6 +12,7 @@ from django.http import JsonResponse
 class UsersView(generics.ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]
 
 
 class UserSingleView(generics.RetrieveUpdateDestroyAPIView):
@@ -32,15 +33,18 @@ class CategoriesView(generics.ListCreateAPIView):
 class TasksView(generics.ListCreateAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [AllowAny]
 
 
 class TaskSingleView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
+    permission_classes = [AllowAny]
 
 
 class SubtasksView(generics.ListCreateAPIView):
     serializer_class = SubtaskSerializer
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         pk = self.kwargs.get('pk')
@@ -83,6 +87,8 @@ class SubtaskSingleView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SummaryView(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         summary_data = Task.objects.aggregate(
             todo_count=Count("id", filter=Q(status="to_do")),
