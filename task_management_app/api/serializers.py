@@ -59,14 +59,13 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'description', 'assigned_users', 'assigned_user_id', 'due_date', 'prio', 'prio_id', 'category', 'category_id', 'status', 'subtasks']
 
     def create(self, validated_data):
-        """ Überschreibt das create()-Methode, um Subtasks zu speichern """
-        subtasks_data = validated_data.pop('subtasks', [])  # Subtasks-Daten aus Request entfernen
+        subtasks_data = validated_data.pop('subtasks', [])
         assigned_users = validated_data.pop('assigned_users', [])
-        task = Task.objects.create(**validated_data)  # Erstellt die Task
+        task = Task.objects.create(**validated_data)
         task.assigned_users.set(assigned_users)
 
         for subtask_data in subtasks_data:
-            Subtask.objects.create(task=task, **subtask_data)  # Verknüpft Subtasks mit Task
+            Subtask.objects.create(task=task, **subtask_data)
         return task
     
     def update(self, instance, validated_data):

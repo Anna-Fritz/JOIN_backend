@@ -6,7 +6,6 @@ from ..models import User, Task, Subtask, Prio, Category
 from .serializers import UserSerializer, TaskSerializer, SubtaskSerializer, \
     PrioSerializer, CategorySerializer
 from django.db.models import Count, Min, Q
-from django.http import JsonResponse
 
 
 class UsersView(generics.ListCreateAPIView):
@@ -64,26 +63,26 @@ class SubtaskSingleView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SubtaskSerializer
 
     def get_queryset(self):
-        """Filtert die Subtask-Liste so, dass nur Subtasks der spezifischen Task zurückgegeben werden."""
-        task_id = self.kwargs.get('task_id')  # Task-ID aus der URL holen
-        return Subtask.objects.filter(task__id=task_id)  # Nur Subtasks der Task zurückgeben
+        """Filters the subtask list so that only subtasks of the specific task are returned"""
+        task_id = self.kwargs.get('task_id')  # get task_id of url
+        return Subtask.objects.filter(task__id=task_id)  # return subtask only of the task
 
     def perform_update(self, serializer):
-        """Stellt sicher, dass die Subtask immer mit der richtigen Task verknüpft bleibt."""
-        subtask = serializer.save(partial=True)  # Subtask speichern
+        """Ensures that the subtask always remains linked to the correct task"""
+        subtask = serializer.save(partial=True)  # save subtask
         task_id = self.kwargs.get('task_id')
         task = Task.objects.get(id=task_id)
 
         if subtask not in task.subtasks.all():
-            task.subtasks.add(subtask)  # Falls sie nicht mehr verknüpft ist, wieder hinzufügen
+            task.subtasks.add(subtask)  # If it is no longer linked, add it back
 
     def perform_destroy(self, instance):
-        """Entfernt die Subtask auch aus der ManyToMany-Beziehung der Task, bevor sie gelöscht wird."""
+        """Removes the subtask from the task's ManyToMany relationship before deleting it"""
         task_id = self.kwargs.get('task_id')
         task = Task.objects.get(id=task_id)
 
-        task.subtasks.remove(instance)  # Entfernt die Subtask aus der Task-Relation
-        instance.delete()  # Löscht die Subtask endgültig
+        task.subtasks.remove(instance)  # remove subtask of task relation
+        instance.delete()  # deletes subtask permanently
 
 
 class SummaryView(APIView):

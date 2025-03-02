@@ -11,11 +11,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
-    repeated_password = serializers.CharField(write_only=True)
+    confirmed_password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'repeated_password']
+        fields = ['username', 'email', 'password', 'confirmed_password']
         extra_kwargs = {
             'password': {
                 'write_only': True
@@ -24,9 +24,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         pw = data['password']
-        repeated_pw = data['repeated_password']
+        confirmed_pw = data['confirmed_password']
 
-        if pw != repeated_pw:
+        if pw != confirmed_pw:
             raise serializers.ValidationError({'error': 'Passwords do not match'})
 
         if User.objects.filter(email=data['email']).exists():
@@ -35,7 +35,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return data
 
     def create(self, validated_data):
-        validated_data.pop('repeated_password')
+        validated_data.pop('confirmed_password')
         return User.objects.create_user(**validated_data)
 
 
