@@ -31,8 +31,8 @@ tzdata==2025.1
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/your-repository-url.git
-   cd join-backend
+   git clone https://github.com/Anna-Fritz/JOIN_backend.git
+   cd JOIN_backend
    ```
 
 2. Create and activate a virtual environment:
