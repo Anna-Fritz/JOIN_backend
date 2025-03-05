@@ -64,24 +64,24 @@ tzdata==2025.1
 
 - **User Management:**
   - `GET, POST /user/` → Retrieve all users or create a new user.
-  - `GET /user/{id}/` → Retrieve a specific user.
+  - `GET, PUT, PATCH, DELETE /user/{id}/` → Retrieve, update, destroy a specific user.
 
 - **Task Management:**
   - `GET, POST /task/` → Retrieve all tasks or create a new task.
-  - `GET /task/{id}/` → Retrieve details of a specific task.
+  - `GET, PUT, PATCH, DELETE /task/{id}/` → Retrieve, update, destroy details of a specific task.
 
 - **Subtask Management:**
   - `GET, POST /task/{id}/subtask/` → Retrieve or create subtasks for a task.
-  - `GET /task/{task_id}/subtask/{id}/` → Retrieve details of a specific subtask.
+  - `GET, PUT, PATCH, DELETE /task/{task_id}/subtask/{id}/` → Retrieve, update, destroy details of a specific subtask.
 
 - **Summary:**
-  - `GET /summary/` → Retrieve an overview of tasks and subtasks.
+  - `GET /summary/` → Retrieve an overview of tasks and deadlines.
 
 - **Priority Management:**
-  - `GET /prio/` → Retrieve a list of priorities.
+  - `GET, POST /prio/` → Retrieve a list of priorities or create a new priority.
 
 - **Category Management:**
-  - `GET /category/` → Retrieve a list of categories.
+  - `GET, POST /category/` → Retrieve a list of categories or create a new category.
 
 - **User Profiles:**
   - `GET, POST /profiles/` → Retrieve all user profiles or create a new one.
