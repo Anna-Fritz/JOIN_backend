@@ -16,7 +16,7 @@ class UsersView(generics.ListCreateAPIView):
 class UserSingleView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class PriosView(generics.ListCreateAPIView):
@@ -37,7 +37,7 @@ class TasksView(generics.ListCreateAPIView):
 class TaskSingleView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
 
 class SubtasksView(generics.ListCreateAPIView):
@@ -84,6 +84,7 @@ class SubtaskSingleView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class SummaryView(APIView):
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         summary_data = Task.objects.aggregate(
