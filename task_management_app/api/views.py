@@ -24,7 +24,6 @@ class UserSingleView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [IsAuthenticated]
 
 
 class PriosView(generics.ListCreateAPIView):
@@ -64,7 +63,6 @@ class TaskSingleView(generics.RetrieveUpdateDestroyAPIView):
     """
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
-    # permission_classes = [IsAuthenticated]
 
 
 class SubtasksView(generics.ListCreateAPIView):
@@ -162,7 +160,6 @@ class SummaryView(APIView):
     - The most urgent task's due date
     - Tasks filtered by priority level
     """
-    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         """
