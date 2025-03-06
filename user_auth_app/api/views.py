@@ -15,19 +15,40 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 class UserProfileList(generics.ListCreateAPIView):
+    """
+    View for listing all user profiles and creating a new user profile.
+    
+    Handles GET requests to retrieve all user profiles and POST requests to create a new profile.
+    Uses the UserProfileSerializer to serialize the data.
+    """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
 
 class UserProfileDetail(generics.RetrieveUpdateDestroyAPIView):
+    """
+    View for retrieving, updating, and deleting a specific user profile.
+
+    Handles GET, PUT, PATCH, and DELETE requests for individual user profiles.
+    Uses the UserProfileSerializer to serialize and deserialize the data.
+    """
     queryset = UserProfile.objects.all()
     serializer_class = UserProfileSerializer
 
 
 class RegistrationView(APIView):
+    """
+    View for handling user registration, including creating a new user and generating an authentication token.
+    
+    Accepts POST requests with user registration data (username, email, password), validates it,
+    creates a new user, and returns an authentication token along with user details.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Handles the POST request to register a new user and issue an authentication token.
+        """
         serializer = RegistrationSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -46,9 +67,18 @@ class RegistrationView(APIView):
 
 
 class LoginView(ObtainAuthToken):
+    """
+    View for handling user login and returning an authentication token.
+
+    This view accepts user credentials (email and password), authenticates the user,
+    and returns a token that can be used for authenticated API requests.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Handles the POST request to authenticate a user and issue an authentication token.
+        """
         serializer = EmailAuthTokenSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -69,6 +99,12 @@ class LoginView(ObtainAuthToken):
 
 @api_view(['POST'])
 def login_view(request):
+    """
+    View for user login that returns an access token and optionally sets a refresh token cookie.
+    
+    This view handles user login, generates a JWT access token, and optionally sets the refresh token as a cookie 
+    (with a configurable expiration time based on 'remember me' choice).
+    """
     data = request.data
 
     try:
@@ -108,6 +144,11 @@ def login_view(request):
 
 @csrf_exempt
 def refresh_view(request):
+    """
+    View for refreshing the access token using a valid refresh token stored in a cookie.
+    
+    This view reads the refresh token from the request cookies, validates it, and returns a new access token.
+    """
     refresh_token = request.COOKIES.get("refreshToken")
 
     if not refresh_token:
@@ -123,6 +164,11 @@ def refresh_view(request):
 
 @csrf_exempt
 def logout_view(request):
+    """
+    View for logging out the user by deleting the refresh token cookie.
+    
+    This view removes the 'refreshToken' cookie, effectively logging out the user and invalidating their session.
+    """
     response = JsonResponse({"message": "Logged out"})
     response.delete_cookie("refreshToken")
     return response

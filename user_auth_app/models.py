@@ -5,6 +5,10 @@ from django.db import models
 
 
 class UserProfile(models.Model):
+    """
+    Represents a user's profile, with additional information like bio and location.
+
+    """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     bio = models.TextField(blank=True, null=True)
     location = models.CharField(max_length=100, blank=True, null=True)
