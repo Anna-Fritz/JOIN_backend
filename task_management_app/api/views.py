@@ -164,7 +164,7 @@ class SummaryView(APIView):
         """
         Retrieves a summary of task statistics.
 
-        This method calculates counts of tasks based on their `status` and 
+        This method calculates counts of tasks based on their `status` and
         `prio` level and returns aggregated data, including counts for
         `to_do`, `done`, `in_progress`, `await_feedback`, and `urgent` tasks.
         """

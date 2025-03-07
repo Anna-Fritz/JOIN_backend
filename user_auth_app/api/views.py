@@ -9,9 +9,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+import uuid
 
 
 class UserProfileList(generics.ListCreateAPIView):
@@ -98,6 +99,7 @@ class LoginView(ObtainAuthToken):
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login_view(request):
     """
     View for user login that returns an access token and optionally sets a refresh token cookie.
@@ -157,7 +159,7 @@ def refresh_view(request):
     try:
         refresh = RefreshToken(refresh_token)
         access_token = str(refresh.access_token)
-        return JsonResponse({"access": access_token})
+        return JsonResponse({"accessToken": access_token})
     except Exception:
         return JsonResponse({"error": "Invalid refresh token"}, status=401)
 
@@ -172,3 +174,64 @@ def logout_view(request):
     response = JsonResponse({"message": "Logged out"})
     response.delete_cookie("refreshToken")
     return response
+
+
+class GuestLoginView(APIView):
+    """
+    API endpoint for guest login.
+
+    This view creates a temporary guest user with a unique username and 
+    generates JSON Web Tokens (JWT) for authentication.
+
+    """
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        guest_id = uuid.uuid4().hex  # create unique ID for guest
+        guest_user = User.objects.create_user(
+            username=f"guest_{guest_id}",
+            email=None,
+            password=None
+        )
+        guest_user.save()
+
+        # Generiere ein JWT für den Gast
+        refresh = RefreshToken.for_user(guest_user)
+        access_token = refresh.access_token
+
+        return Response({
+            'refreshToken': str(refresh),
+            'accessToken': str(access_token),
+        })
+
+
+class GuestLogoutView(APIView):
+    """
+    API endpoint for guest logout.
+
+    This view invalidates the provided refresh token and deletes the guest user if it exists.
+
+    """
+    def post(self, request, *args, **kwargs):
+        refresh_token = request.data.get('refreshToken')
+        print("Request Data:", request.data)
+
+        if refresh_token:
+            try:
+                token = RefreshToken(refresh_token)
+
+                # identify user with ID in token
+                user = User.objects.get(id=token["user_id"])
+                token.blacklist()
+
+                # if user is a guest, delete it
+                if user.username.startswith("guest_"):
+                    user.delete()
+
+                return Response({"message": "Guest logged out and removed"}, status=200)
+            except User.DoesNotExist:
+                return Response({"error": "User not found"}, status=404)
+            except Exception:
+                return Response({"error": "Invalid token"}, status=400)
+
+        return Response({"message": "No active guest session"}, status=400)
