@@ -202,6 +202,7 @@ class GuestLoginView(APIView):
         return Response({
             'refreshToken': str(refresh),
             'accessToken': str(access_token),
+            'guest_id': guest_id
         })
 
 
@@ -212,21 +213,17 @@ class GuestLogoutView(APIView):
     This view invalidates the provided refresh token and deletes the guest user if it exists.
 
     """
+    permission_classes = [AllowAny]
+
     def post(self, request, *args, **kwargs):
         refresh_token = request.data.get('refreshToken')
-        print("Request Data:", request.data)
 
         if refresh_token:
             try:
                 token = RefreshToken(refresh_token)
-
-                # identify user with ID in token
                 user = User.objects.get(id=token["user_id"])
+                user.delete()
                 token.blacklist()
-
-                # if user is a guest, delete it
-                if user.username.startswith("guest_"):
-                    user.delete()
 
                 return Response({"message": "Guest logged out and removed"}, status=200)
             except User.DoesNotExist:
