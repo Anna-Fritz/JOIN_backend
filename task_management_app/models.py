@@ -22,8 +22,8 @@ class Category(models.Model):
     Represents a category for organizing tasks.
 
     """
-    name = models.CharField(max_length=15)
-    color = models.CharField(max_length=7)
+    name = models.CharField(max_length=15, unique=True)
+    color = models.CharField(max_length=7, default="#000000")
 
     def __str__(self):
         return self.name
